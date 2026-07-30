@@ -1,0 +1,143 @@
+.journey-scene {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+  padding: 1rem;
+}
+
+/* Header */
+.journey-header {
+  align-self: stretch;
+  padding: var(--space-3) 0;
+}
+
+.title-group h1 {
+  margin: 0;
+
+  font-family: var(--font-title);
+  font-size: var(--text-lg);
+  letter-spacing: -0.03em;
+}
+
+.title-group p {
+  margin: var(--space-2) 0 0;
+  font-family: var(--font-body);
+  font-size: var(--text-md);
+  color: var(--color-text-secondary);
+}
+
+/* Timeline */
+.timeline {
+  align-self: stretch;
+}
+
+.timeline-header h2 {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+
+  color: var(--color-text-secondary);
+}
+
+#timeline-track {
+  width: 75%;
+  margin: 0 auto;
+
+  position: relative;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: var(--space-5) var(--space-5);
+}
+
+.timeline-point {
+  position: relative;
+
+  cursor: pointer;
+  z-index: 1;
+  margin: 0 auto;
+}
+
+.timeline-point {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.timeline-marker {
+  margin-bottom: 6px;
+}
+
+.timeline-year {
+  font-size: var(--text-xs);
+  text-align: center;
+}
+
+.timeline-marker {
+  width: 12px;
+  height: 12px;
+
+  border-radius: 100%;
+
+  background: var(--color-text-secondary);
+  border: 3px solid var(--color-background);
+
+  transition:
+    transform var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.timeline-point:hover .timeline-marker {
+  background: var(--color-accent-hover);
+}
+
+.timeline-point.active .timeline-marker {
+  background: var(--color-accent);
+  transform: scale(1.75);
+}
+
+/* Main */
+.journey-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  align-self: stretch;
+  gap: var(--space-5);
+  padding: var(--space-3) 0;
+}
+
+/* Map */
+.map-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#world-map {
+  width: 100%;
+  height: 100%;
+}
+
+#world-map svg {
+  width: 100%;
+  height: 100%;
+}
+
+.country {
+  stroke: var(--color-background);
+  stroke-width: 0.5px;
+
+  transition: fill var(--transition-fast);
+}
+
+.country:hover {
+  stroke-width: 1.5px;
+  cursor: pointer;
+}

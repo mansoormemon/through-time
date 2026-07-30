@@ -1,0 +1,98 @@
+:root {
+  /* Colors */
+  --color-background: #1b1712;
+  --color-panel: #241e17;
+
+  --color-text: #f5ead3;
+  --color-text-secondary: #cbbd9e;
+
+  --color-accent: #d1a24c;
+  --color-accent-hover: #e1b96b;
+
+  --color-border: rgba(245, 234, 211, 0.2);
+
+  /* Typography */
+  --font-title: "Bree Serif", serif;
+  --font-body: "Nunito", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+
+  /* Sizes */
+  --text-xs: 0.75rem;
+  --text-sm: 0.9rem;
+  --text-md: 1rem;
+  --text-lg: 1.4rem;
+  --text-display: clamp(3.5rem, 7vw, 6rem);
+
+  /* Spacing */
+  --space-2: 0.5rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+  --space-5: 2rem;
+
+  /* Effects */
+  --radius-md: 999px;
+
+  --transition-fast: 200ms ease;
+  --transition-slow: 900ms ease;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+#app {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.scene {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+  transition:
+    opacity 800ms ease,
+    filter 800ms ease;
+}
+
+.scene.transition-out {
+  opacity: 0;
+  filter: blur(12px);
+}
+
+.scene.transition-in {
+  animation: scene-enter 900ms ease forwards;
+}
+
+@keyframes scene-enter {
+  from {
+    opacity: 0;
+    filter: blur(12px);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
