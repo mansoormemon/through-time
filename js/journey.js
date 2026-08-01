@@ -1,10 +1,16 @@
 import { changeScene, render } from "./router.js";
 
 let reactionsInitialized = false;
+let colorMap = d3.interpolateYlOrBr;
 
 const journey = {
   data: null,
-  state: { currentYear: null, selectedCountry: null },
+  years: null,
+  state: {
+    yearIndex: -1,
+    currentData: null,
+    selectedCountry: null,
+  },
   listeners: {},
 };
 
@@ -12,13 +18,11 @@ function subscribe(key, callback) {
   if (!journey.listeners[key]) {
     journey.listeners[key] = [];
   }
-
   journey.listeners[key].push(callback);
 }
 
 function setState(key, value) {
   journey.state[key] = value;
-
   if (journey.listeners[key]) {
     journey.listeners[key].forEach((callback) => {
       callback(value);
@@ -29,15 +33,17 @@ function setState(key, value) {
 function setupReactions() {
   if (reactionsInitialized) return;
   reactionsInitialized = true;
-  subscribe("currentYear", () => {
+
+  subscribe("yearIndex", () => {
+    setState("currentData", selectData(journey.years[journey.state.yearIndex]));
+
     updateTimeline();
-    updateMap();
-    if (journey.state.selectedCountry) {
-      updateCountryModal();
-    }
   });
-  subscribe("selectedCountry", () => {
-    openCountryModal();
+
+  subscribe("selectedCountry", () => {});
+
+  subscribe("currentData", () => {
+    updateMap();
   });
 }
 
@@ -63,48 +69,78 @@ export async function renderJourney(app, state) {
   const html = await response.text();
   app.innerHTML = html;
 
-  journey.data = await loadData();
-
   setupReactions();
+
+  journey.data = await loadData();
+  journey.years = [...new Set(journey.data.map((d) => d.year))].sort();
+
+  setState("yearIndex", 0);
+
   renderTimeline();
   renderMap();
 }
 
 function renderTimeline() {
-  const years = [...new Set(journey.data.map((d) => d.year))].sort();
-
-  journey.state.currentYear = years[0];
-
   const track = d3.select("#timeline-track");
   track.selectAll("*").remove();
 
   const points = track
     .selectAll(".timeline-point")
-    .data(years)
+    .data(journey.years)
     .enter()
     .append("div")
     .attr("class", (d) =>
-      d === journey.state.currentYear
+      d === journey.years[journey.state.yearIndex]
         ? "timeline-point active"
         : "timeline-point",
     )
     .on("click", (event, year) => {
-      setState("currentYear", year);
+      setState("yearIndex", journey.years.indexOf(year));
     });
   points.append("div").attr("class", "timeline-marker");
   points
     .append("span")
     .attr("class", "timeline-year")
     .text((d) => d);
+
+  setupTimelineControls();
 }
 
 function updateTimeline() {
   d3.selectAll(".timeline-point").classed(
     "active",
-    (d) => d === journey.state.currentYear,
+    (d) => d === journey.years[journey.state.yearIndex],
   );
 
-  const active = d3.select(".timeline-point.active");
+  setTimelineControlsState();
+}
+
+function setupTimelineControls() {
+  d3.select("#timeline-prev").on("click", () => {
+    if (journey.state.yearIndex > 0) {
+      setState("yearIndex", journey.state.yearIndex - 1);
+    }
+  });
+
+  d3.select("#timeline-next").on("click", () => {
+    if (journey.state.yearIndex < journey.years.length - 1) {
+      setState("yearIndex", journey.state.yearIndex + 1);
+    }
+  });
+
+  setTimelineControlsState();
+}
+
+function setTimelineControlsState() {
+  d3.select("#timeline-prev").property(
+    "disabled",
+    journey.state.yearIndex === 0,
+  );
+
+  d3.select("#timeline-next").property(
+    "disabled",
+    journey.state.yearIndex === journey.years.length - 1,
+  );
 }
 
 function createLookup(data) {
@@ -128,23 +164,23 @@ function renderMap() {
 
   const path = d3.geoPath().projection(projection);
 
-  const currentData = selectData(journey.state.currentYear);
-  const lookup = createLookup(currentData);
+  const lookup = createLookup(journey.state.currentData);
 
   const colorScale = d3
-    .scaleSequential(d3.interpolateYlOrBr)
-    .domain(d3.extent(currentData, (d) => d.gdpPerCapita));
+    .scaleSequential(colorMap)
+    .domain(d3.extent(journey.state.currentData, (d) => d.gdpPerCapita));
+
+  console.log(journey.state.currentData);
+  console.log(d3.extent(journey.state.currentData, (d) => d.gdpPerCapita));
 
   d3.json("data/countries-110m.json").then((world) => {
-    const countries = topojson.feature(world, world.objects.countries);
-
-    const filteredCountries = countries.features.filter(
-      (d) => d.properties.name !== "Antarctica",
-    );
+    const countries = topojson
+      .feature(world, world.objects.countries)
+      .features.filter((d) => d.properties.name !== "Antarctica");
 
     svg
       .selectAll(".country")
-      .data(filteredCountries)
+      .data(countries)
       .enter()
       .append("path")
       .attr("class", "country")
@@ -158,62 +194,62 @@ function renderMap() {
         d3.selectAll(".country").classed("selected", false);
         d3.select(this).classed("selected", true).raise();
 
-        openCountryModal(d);
+        // openCountryModal(d);
       });
   });
 }
 
 function updateMap() {
-  const currentData = selectData(journey.state.currentYear);
-  const lookup = createLookup(currentData);
+  const lookup = createLookup(journey.state.currentData);
 
   const colorScale = d3
-    .scaleSequential(d3.interpolateYlOrBr)
-    .domain(d3.extent(currentData, (d) => d.gdpPerCapita));
+    .scaleSequential(colorMap)
+    .domain(d3.extent(journey.state.currentData, (d) => d.gdpPerCapita));
+
+  console.log(journey.state.currentData);
+  console.log(d3.extent(journey.state.currentData, (d) => d.gdpPerCapita));
 
   d3.selectAll(".country")
     .transition()
-    .duration(800)
+    .duration(750)
     .attr("fill", (d) => {
       const row = lookup.get(String(d.id));
-
       if (!row) {
         return "#333";
       }
-
       return colorScale(row.gdpPerCapita);
     });
 }
 
-function openCountryModal(d) {
-  const currentData = selectData(journey.state.currentYear);
-  const countryData = currentData.find((row) => row.isoNum === String(d.id));
+// function openCountryModal(d) {
+//   const currentData = journey.state.currentData;
+//   const countryData = currentData.find((row) => row.isoNum === String(d.id));
 
-  if (!countryData) {
-    console.error("No data found for country:", d.properties.name);
-    return;
-  }
+//   if (!countryData) {
+//     console.error("No data found for country:", d.properties.name);
+//     return;
+//   }
 
-  const modalContent = `
-    <h2>${countryData.country} (${countryData.year})</h2>
-    <p>Continent: ${countryData.continent}</p>
-    <p>Life Expectancy: ${countryData.lifeExpectancy}</p>
-    <p>Population: ${countryData.population}</p>
-    <p>GDP per Capita: ${countryData.gdpPerCapita}</p>
-  `;
+//   const modalContent = `
+//     <h2>${countryData.country} (${countryData.year})</h2>
+//     <p>Continent: ${countryData.continent}</p>
+//     <p>Life Expectancy: ${countryData.lifeExpectancy}</p>
+//     <p>Population: ${countryData.population}</p>
+//     <p>GDP per Capita: ${countryData.gdpPerCapita}</p>
+//   `;
 
-  const modal = document.createElement("div");
-  modal.classList.add("modal");
-  modal.innerHTML = `
-    <div class="modal-content">
-      ${modalContent}
-      <button id="close-modal">Close</button>
-    </div>
-  `;
+//   const modal = document.createElement("div");
+//   modal.classList.add("modal");
+//   modal.innerHTML = `
+//     <div class="modal-content">
+//       ${modalContent}
+//       <button id="close-modal">Close</button>
+//     </div>
+//   `;
 
-  document.body.appendChild(modal);
+//   document.body.appendChild(modal);
 
-  document.getElementById("close-modal").addEventListener("click", () => {
-    document.body.removeChild(modal);
-  });
-}
+//   document.getElementById("close-modal").addEventListener("click", () => {
+//     document.body.removeChild(modal);
+//   });
+// }
