@@ -39,6 +39,8 @@ function setupReactions() {
     setState("currentData", selectData(journey.years[journey.state.yearIndex]));
 
     updateTimeline();
+    updateStoryPanel();
+    updateGlobalStats();
   });
 
   subscribe("selectedCountry", () => {});
@@ -116,7 +118,6 @@ function updateTimeline() {
   );
 
   setTimelineControlsState();
-  updateStoryPanel();
 }
 
 function setupTimelineControls() {
@@ -221,6 +222,21 @@ function renderMap() {
         return colorScale(row.gdpPerCapita);
       })
       .attr("d", path)
+      .on("mouseenter", function (event, d) {
+        d3.select(this).classed("hovered", true);
+
+        d3.select("#map-tooltip").style("opacity", 1).text(d.properties.name);
+      })
+      .on("mousemove", function (event) {
+        d3.select("#map-tooltip")
+          .style("left", `${event.clientX + 16}px`)
+          .style("top", `${event.clientY + 16}px`);
+      })
+      .on("mouseleave", function () {
+        d3.select(this).classed("hovered", false);
+
+        d3.select("#map-tooltip").style("opacity", 0);
+      })
       .on("click", function (event, d) {
         d3.selectAll(".country").classed("selected", false);
         d3.select(this).classed("selected", true).raise();
@@ -250,6 +266,19 @@ function updateMap() {
       }
       return colorScale(row.gdpPerCapita);
     });
+}
+
+function updateGlobalStats() {
+  const data = journey.state.currentData;
+
+  const population = d3.sum(data, (d) => d.population);
+  const globalGDP = d3.sum(data, (d) => d.population * d.gdpPerCapita);
+
+  const medianGDP = d3.median(data, (d) => d.gdpPerCapita);
+
+  d3.select("#global-population").text(`${(population / 1e9).toFixed(2)}B`);
+  d3.select("#global-gdp").text(d3.format("$,.2s")(globalGDP));
+  d3.select("#median-gdp").text(d3.format("$,.0f")(medianGDP));
 }
 
 // function openCountryModal(d) {
