@@ -110,6 +110,33 @@
   color: var(--color-text-secondary);
 }
 
+#timeline-next {
+  overflow: hidden;
+  white-space: nowrap;
+
+  transition:
+    width var(--transition-fast),
+    padding var(--transition-fast),
+    border-radius var(--transition-fast),
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+#timeline-next.continue {
+  width: 6rem;
+  padding: 0 var(--space-4);
+
+  border-radius: var(--radius-md);
+}
+
+.next-text {
+  font-size: var(--text-sm);
+}
+
+#timeline-next.continue .next-text {
+  margin-right: var(--space-2);
+}
+
 /* Timeline rail */
 #timeline-track::before {
   content: "";

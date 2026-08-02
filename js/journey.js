@@ -131,7 +131,9 @@ function setupTimelineControls() {
     }
   });
   d3.select("#timeline-next").on("click", () => {
-    if (journey.state.yearIndex < journey.years.length - 1) {
+    const isLast = journey.state.yearIndex === journey.years.length - 1;
+    if (isLast) {
+    } else {
       setState("yearIndex", journey.state.yearIndex + 1);
     }
   });
@@ -145,10 +147,9 @@ function setTimelineControlsState() {
     journey.state.yearIndex === 0,
   );
 
-  d3.select("#timeline-next").property(
-    "disabled",
-    journey.state.yearIndex === journey.years.length - 1,
-  );
+  const isLast = journey.state.yearIndex === journey.years.length - 1;
+  d3.select("#timeline-next").classed("continue", isLast);
+  d3.select("#timeline-next .next-text").text(isLast ? "Next" : "");
 }
 
 function updateTimelineProgress() {
