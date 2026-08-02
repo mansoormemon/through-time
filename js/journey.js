@@ -5,6 +5,7 @@ let colorMap = d3.interpolateYlOrBr;
 
 const journey = {
   data: null,
+  facts: null,
   years: null,
   state: {
     yearIndex: -1,
@@ -74,6 +75,8 @@ export async function renderJourney(app, state) {
   journey.data = await loadData();
   journey.years = [...new Set(journey.data.map((d) => d.year))].sort();
 
+  journey.facts = await d3.json("data/facts.json");
+
   setState("yearIndex", 0);
 
   renderTimeline();
@@ -113,6 +116,7 @@ function updateTimeline() {
   );
 
   setTimelineControlsState();
+  updateStoryPanel();
 }
 
 function setupTimelineControls() {
@@ -121,7 +125,6 @@ function setupTimelineControls() {
       setState("yearIndex", journey.state.yearIndex - 1);
     }
   });
-
   d3.select("#timeline-next").on("click", () => {
     if (journey.state.yearIndex < journey.years.length - 1) {
       setState("yearIndex", journey.state.yearIndex + 1);
@@ -141,6 +144,23 @@ function setTimelineControlsState() {
     "disabled",
     journey.state.yearIndex === journey.years.length - 1,
   );
+}
+
+function updateStoryPanel() {
+  const fact = journey.facts.find(
+    (d) => d.year === journey.years[journey.state.yearIndex],
+  );
+  d3.select("#story-headline").text(fact.headline);
+  d3.select("#story-paras")
+    .selectAll("p")
+    .data(fact.paras)
+    .join("p")
+    .text((d) => d);
+  d3.select("#story-tags")
+    .selectAll("span")
+    .data(fact.tags)
+    .join("span")
+    .text((d) => d);
 }
 
 function createLookup(data) {

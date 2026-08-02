@@ -166,6 +166,13 @@
   padding: var(--space-3) 0;
 }
 
+.journey-content {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: var(--space-5);
+  min-height: 0;
+}
+
 /* Map */
 .map-container {
   display: flex;
@@ -176,6 +183,8 @@
 #world-map {
   width: 100%;
   height: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
 }
 
 #world-map svg {
@@ -193,4 +202,44 @@
 .country:hover {
   stroke-width: 1.5px;
   cursor: pointer;
+}
+
+.story-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background: var(--color-panel);
+  border-radius: 8px;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.tags span {
+  padding: 0.35rem 0.8rem;
+
+  border-radius: var(--radius-md);
+
+  background: rgba(209, 162, 76, 0.12);
+  border: 1px solid rgba(209, 162, 76, 0.35);
+
+  color: var(--color-accent);
+
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  line-height: 1;
+
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.tags span:hover {
+  background: rgba(209, 162, 76, 0.2);
+  border-color: var(--color-accent);
 }

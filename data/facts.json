@@ -1,0 +1,122 @@
+[
+  {
+    "year": 1952,
+    "headline": "Post-war recovery and the Cold War economic divide",
+    "paras": [
+      "The global economy entered the 1950s recovering from the destruction of World War II. The United States emerged as the world's largest economy, while Western Europe began rebuilding through industrial investment and international aid.",
+      "Economic development was highly uneven. Many countries in Asia, Africa, and Latin America remained dependent on agriculture and commodity exports, creating a large gap between industrialized and developing economies.",
+      "The Cold War began influencing global economic relationships, with countries increasingly aligning with either Western capitalist systems or Soviet-style planned economies."
+    ],
+    "tags": ["Post-war recovery", "Cold War", "Economic inequality"]
+  },
+  {
+    "year": 1957,
+    "headline": "European integration and expanding global trade",
+    "paras": [
+      "The Treaty of Rome established the European Economic Community, beginning a new era of economic cooperation and trade integration in Europe.",
+      "Western economies experienced strong growth driven by industrial expansion, technological progress, and increasing international trade.",
+      "Meanwhile, many newly independent nations faced challenges building industrial capacity and modern economic institutions."
+    ],
+    "tags": ["European integration", "Trade", "Industrial growth"]
+  },
+  {
+    "year": 1962,
+    "headline": "Development challenges and the rise of emerging economies",
+    "paras": [
+      "The 1960s brought rapid economic expansion in many developed countries, while newly independent nations focused on modernization and industrial development.",
+      "International organizations increased efforts to support economic development through infrastructure investment, education, and trade programs.",
+      "Despite progress, large differences remained in productivity, income, and access to technology between regions."
+    ],
+    "tags": ["Development", "Decolonization", "Infrastructure"]
+  },
+  {
+    "year": 1967,
+    "headline": "Global growth before the oil shock era",
+    "paras": [
+      "The late 1960s represented a period of strong economic growth across much of the industrialized world.",
+      "Manufacturing expanded rapidly, and international corporations increased their global presence.",
+      "However, many developing economies continued struggling with debt, limited industrialization, and dependence on natural resources."
+    ],
+    "tags": ["Manufacturing", "Global trade", "Economic growth"]
+  },
+  {
+    "year": 1972,
+    "headline": "The end of the post-war economic boom",
+    "paras": [
+      "By the early 1970s, the long period of rapid post-war growth began slowing. Inflationary pressures and economic instability became increasingly visible.",
+      "The international monetary system changed after the collapse of the Bretton Woods fixed exchange rate system.",
+      "Developing countries continued seeking industrial growth while facing challenges from changing global markets."
+    ],
+    "tags": ["Bretton Woods", "Inflation", "Economic transition"]
+  },
+  {
+    "year": 1977,
+    "headline": "Oil shocks reshape the world economy",
+    "paras": [
+      "The oil crises of the 1970s transformed global economics by sharply increasing energy prices and creating inflation across many countries.",
+      "Industrial economies began shifting toward more efficient technologies and new economic policies.",
+      "Oil-producing nations gained significant financial influence through increased energy revenues."
+    ],
+    "tags": ["Oil crisis", "Energy", "Inflation"]
+  },
+  {
+    "year": 1982,
+    "headline": "Debt crises and economic restructuring",
+    "paras": [
+      "The early 1980s were marked by a global recession, high interest rates, and severe debt problems in many developing countries.",
+      "International financial institutions promoted economic reforms focused on reducing government spending and increasing market competition.",
+      "Some economies recovered quickly, while others experienced prolonged stagnation."
+    ],
+    "tags": ["Debt crisis", "Recession", "Economic reform"]
+  },
+  {
+    "year": 1987,
+    "headline": "Global markets become increasingly connected",
+    "paras": [
+      "The late 1980s saw accelerating globalization through expanded trade, financial markets, and multinational production networks.",
+      "East Asian economies continued rapid industrialization, becoming important centers of manufacturing growth.",
+      "Technological advances began transforming communication, finance, and international business."
+    ],
+    "tags": ["Globalization", "Technology", "East Asia"]
+  },
+  {
+    "year": 1992,
+    "headline": "A new global economic order emerges",
+    "paras": [
+      "The collapse of the Soviet Union changed the global economic landscape, creating new markets and reshaping international relationships.",
+      "European integration deepened with the creation of the European Union framework.",
+      "Market-oriented reforms expanded across many countries as globalization accelerated."
+    ],
+    "tags": ["Soviet collapse", "European Union", "Global markets"]
+  },
+  {
+    "year": 1997,
+    "headline": "Asian financial crisis exposes global vulnerabilities",
+    "paras": [
+      "The Asian financial crisis began in 1997, affecting currencies, financial markets, and economies across Southeast Asia.",
+      "The crisis demonstrated how interconnected global financial systems had become.",
+      "Many countries strengthened financial regulations and economic policies in response."
+    ],
+    "tags": ["Asian crisis", "Finance", "Global markets"]
+  },
+  {
+    "year": 2002,
+    "headline": "China's rise transforms global production",
+    "paras": [
+      "The early 2000s marked a period of rapid globalization, with China becoming a major center of manufacturing and international trade.",
+      "Emerging economies experienced stronger growth as foreign investment expanded and global supply chains developed.",
+      "Economic growth remained uneven, with large differences in income levels continuing between countries."
+    ],
+    "tags": ["China", "Manufacturing", "Trade"]
+  },
+  {
+    "year": 2007,
+    "headline": "Global prosperity before the financial crisis",
+    "paras": [
+      "By 2007, global economic growth was strong, supported by international trade, financial expansion, and rapid growth in emerging markets.",
+      "Housing and credit markets in the United States showed increasing instability, creating risks for the interconnected global economy.",
+      "The following year would bring the largest financial crisis since the Great Depression, reshaping global economic policy."
+    ],
+    "tags": ["Globalization", "Credit crisis", "Financial markets"]
+  }
+]
