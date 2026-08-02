@@ -1,7 +1,7 @@
 import { changeScene, render } from "./router.js";
 
 let reactionsInitialized = false;
-let colorMap = d3.interpolateYlOrBr;
+let colorMap = d3.interpolateBuPu;
 
 const journey = {
   data: null,
@@ -43,7 +43,9 @@ function setupReactions() {
     updateGlobalStats();
   });
 
-  subscribe("selectedCountry", () => {});
+  subscribe("selectedCountry", () => {
+    updateCountryComparison();
+  });
 
   subscribe("currentData", () => {
     updateMap();
@@ -119,6 +121,7 @@ function updateTimeline() {
 
   setTimelineControlsState();
   updateTimelineProgress();
+  updateCountryComparison();
 }
 
 function setupTimelineControls() {
@@ -212,9 +215,6 @@ function renderMap() {
     .scaleSequential(colorMap)
     .domain(d3.extent(journey.state.currentData, (d) => d.gdpPerCapita));
 
-  console.log(journey.state.currentData);
-  console.log(d3.extent(journey.state.currentData, (d) => d.gdpPerCapita));
-
   d3.json("data/countries-110m.json").then((world) => {
     const countries = topojson
       .feature(world, world.objects.countries)
@@ -248,10 +248,7 @@ function renderMap() {
         d3.select("#map-tooltip").style("opacity", 0);
       })
       .on("click", function (event, d) {
-        d3.selectAll(".country").classed("selected", false);
-        d3.select(this).classed("selected", true).raise();
-
-        // openCountryModal(d);
+        setState("selectedCountry", d.id);
       });
   });
 }
@@ -262,9 +259,6 @@ function updateMap() {
   const colorScale = d3
     .scaleSequential(colorMap)
     .domain(d3.extent(journey.state.currentData, (d) => d.gdpPerCapita));
-
-  console.log(journey.state.currentData);
-  console.log(d3.extent(journey.state.currentData, (d) => d.gdpPerCapita));
 
   d3.selectAll(".country")
     .transition()
@@ -291,35 +285,288 @@ function updateGlobalStats() {
   d3.select("#median-gdp").text(d3.format("$,.0f")(medianGDP));
 }
 
-// function openCountryModal(d) {
-//   const currentData = journey.state.currentData;
-//   const countryData = currentData.find((row) => row.isoNum === String(d.id));
+function updateCountryComparison() {
+  const container = d3.select("#country-comparison");
+  const country = journey.state.selectedCountry;
 
-//   if (!countryData) {
-//     console.error("No data found for country:", d.properties.name);
-//     return;
-//   }
+  if (!country) {
+    return;
+  }
 
-//   const modalContent = `
-//     <h2>${countryData.country} (${countryData.year})</h2>
-//     <p>Continent: ${countryData.continent}</p>
-//     <p>Life Expectancy: ${countryData.lifeExpectancy}</p>
-//     <p>Population: ${countryData.population}</p>
-//     <p>GDP per Capita: ${countryData.gdpPerCapita}</p>
-//   `;
+  const countryHistory = journey.data.filter(
+    (d) =>
+      d.isoNum === journey.state.selectedCountry &&
+      d.year <= journey.years[journey.state.yearIndex],
+  );
 
-//   const modal = document.createElement("div");
-//   modal.classList.add("modal");
-//   modal.innerHTML = `
-//     <div class="modal-content">
-//       ${modalContent}
-//       <button id="close-modal">Close</button>
-//     </div>
-//   `;
+  const worldMedianHistory = d3.rollups(
+    journey.data.filter(
+      (d) => d.year <= journey.years[journey.state.yearIndex],
+    ),
+    (values) => d3.median(values, (d) => d.gdpPerCapita),
+    (d) => d.year,
+  );
 
-//   document.body.appendChild(modal);
+  const worldHistory = worldMedianHistory.map(([year, gdpPerCapita]) => ({
+    year,
+    gdpPerCapita,
+  }));
 
-//   document.getElementById("close-modal").addEventListener("click", () => {
-//     document.body.removeChild(modal);
-//   });
-// }
+  console.log("Country History:", countryHistory);
+  console.log("World History:", worldHistory);
+
+  const title = d3.select("#selected-country-name");
+  title.text(countryHistory.at(-1).country);
+
+  updateCountryStats(countryHistory.at(-1), worldHistory);
+  renderCountryGDPChart(countryHistory, worldHistory);
+
+  const panel = document.querySelector(".story-panel");
+  panel.scrollTo({
+    top: panel.scrollHeight,
+    behavior: "smooth",
+  });
+}
+
+function updateCountryStats(country) {
+  const data = journey.state.currentData;
+  const container = d3.select("#country-stats");
+
+  container.html("");
+
+  const worldMedianGDP = d3.median(data, (d) => d.gdpPerCapita);
+  const worldGDP = d3.sum(data, (d) => d.gdpPerCapita * d.population);
+
+  const countryGDP = country.gdpPerCapita * country.population;
+  const stats = [
+    {
+      label: "GDP per capita",
+      value: d3.format("$,.0f")(country.gdpPerCapita),
+    },
+    {
+      label: "Gap against median",
+      value: d3.format("+.1%")(country.gdpPerCapita / worldMedianGDP - 1),
+    },
+    {
+      label: "Population",
+      value: `${d3.format(".2f")(country.population / 1e6)}M`,
+    },
+    {
+      label: "Global GDP share",
+      value: d3.format(".1%")(countryGDP / worldGDP),
+    },
+    {
+      label: "Life expectancy",
+      value: `${d3.format(".1f")(country.lifeExpectancy)} years`,
+    },
+  ];
+
+  container
+    .append("div")
+    .attr("class", "global-stats")
+    .html(
+      `
+      <h3>${country.country}</h3>
+    `,
+    )
+    .append("div")
+    .attr("class", "stats-grid")
+    .selectAll(".stat")
+    .data(stats)
+    .enter()
+    .append("div")
+    .attr("class", "stat")
+    .html(
+      (d) => `
+      <div class="stat-label">${d.label}</div>
+      <div class="stat-value">${d.value}</div>
+    `,
+    );
+
+  container.append("br");
+}
+
+function renderCountryGDPChart(countryHistory, worldHistory) {
+  const width = 480;
+  const height = 280;
+
+  const margin = {
+    top: 20,
+    right: 20,
+    bottom: 70,
+    left: 60,
+  };
+
+  d3.select("#country-gdp-chart").html("");
+
+  const svg = d3
+    .select("#country-gdp-chart")
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+  const innerWidth = width - margin.left - margin.right;
+  const innerHeight = height - margin.top - margin.bottom;
+
+  const g = svg
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+  const x = d3
+    .scaleLinear()
+    .domain([
+      d3.min(countryHistory, (d) => d.year),
+      d3.max(countryHistory, (d) => d.year),
+    ])
+    .range([0, innerWidth]);
+
+  const y = d3
+    .scaleLinear()
+    .domain([
+      0,
+      d3.max([
+        ...countryHistory.map((d) => d.gdpPerCapita),
+        ...worldHistory.map((d) => d.gdpPerCapita),
+      ]),
+    ])
+    .nice()
+    .range([innerHeight, 0]);
+
+  const line = d3
+    .line()
+    .x((d) => x(d.year))
+    .y((d) => y(d.gdpPerCapita));
+
+  // world median line
+  g.append("path")
+    .datum(worldHistory)
+    .attr("fill", "none")
+    .attr("stroke", "var(--color-text-secondary)")
+    .attr("stroke-width", 2)
+    .attr("stroke-dasharray", "5,5")
+    .attr("d", line);
+
+  // country line
+  g.append("path")
+    .datum(countryHistory)
+    .attr("fill", "none")
+    .attr("stroke", "var(--color-accent)")
+    .attr("stroke-width", 3)
+    .attr("d", line);
+
+  // selected year gap
+  const countryEnd = countryHistory.at(-1);
+  const worldEnd = worldHistory.at(-1);
+
+  g.append("line")
+    .attr("x1", x(countryEnd.year))
+    .attr("x2", x(countryEnd.year))
+    .attr("y1", y(countryEnd.gdpPerCapita))
+    .attr("y2", y(worldEnd.gdpPerCapita))
+    .attr("stroke", "var(--color-accent)")
+    .attr("stroke-dasharray", "3,3");
+
+  g.append("g")
+    .attr("transform", `translate(0,${innerHeight})`)
+    .call(
+      d3
+        .axisBottom(x)
+        .tickValues(
+          d3.range(
+            journey.years[0],
+            journey.years[journey.state.yearIndex] + 1,
+            5,
+          ),
+        )
+        .tickFormat(d3.format("d")),
+    );
+  g.append("g").call(
+    d3.axisLeft(y).tickFormat((d) => `$${d3.format(".2s")(d)}`),
+  );
+
+  g.selectAll(".country-point")
+    .data(countryHistory)
+    .enter()
+    .append("circle")
+    .attr("class", "country-point")
+    .attr("cx", (d) => x(d.year))
+    .attr("cy", (d) => y(d.gdpPerCapita))
+    .attr("r", 3)
+    .attr("fill", "var(--color-accent)");
+
+  g.selectAll(".world-point")
+    .data(worldHistory)
+    .enter()
+    .append("circle")
+    .attr("class", "world-point")
+    .attr("cx", (d) => x(d.year))
+    .attr("cy", (d) => y(d.gdpPerCapita))
+    .attr("r", 3)
+    .attr("fill", "var(--color-text-secondary)");
+
+  g.selectAll(".country-value")
+    .data(countryHistory)
+    .enter()
+    .append("text")
+    .attr("class", "country-value")
+    .attr("x", (d) => x(d.year))
+    .attr("y", (d) => y(d.gdpPerCapita) - 8)
+    .attr("text-anchor", "middle")
+    .text((d) => d3.format(".2s")(d.gdpPerCapita));
+
+  g.selectAll(".world-value")
+    .data(worldHistory)
+    .enter()
+    .append("text")
+    .attr("class", "world-value")
+    .attr("x", (d) => x(d.year))
+    .attr("y", (d) => y(d.gdpPerCapita) + 14)
+    .attr("text-anchor", "middle")
+    .text((d) => d3.format(".2s")(d.gdpPerCapita));
+
+  const legend = svg
+    .append("g")
+    .attr("class", "legend")
+    .attr("transform", `translate(${margin.left},${height - 30})`);
+
+  legend
+    .append("line")
+    .attr("x1", 0)
+    .attr("x2", 25)
+    .attr("y1", 0)
+    .attr("y2", 0)
+    .attr("stroke", "var(--color-accent)")
+    .attr("stroke-width", 3);
+
+  legend
+    .append("text")
+    .attr("x", 35)
+    .attr("y", 4)
+    .attr("font-size", "var(--text-xs)")
+    .text("Country GDP per capita");
+
+  legend
+    .append("line")
+    .attr("x1", 180)
+    .attr("x2", 205)
+    .attr("y1", 0)
+    .attr("y2", 0)
+    .attr("stroke", "var(--color-text-secondary)")
+    .attr("stroke-width", 2)
+    .attr("stroke-dasharray", "5,5");
+
+  legend
+    .append("text")
+    .attr("x", 215)
+    .attr("y", 4)
+    .attr("font-size", "var(--text-xs)")
+    .text("World median GDP per capita");
+
+  const caption = d3
+    .select("#country-gdp-chart")
+    .append("div")
+    .attr("class", "chart-caption")
+    .text(
+      "Tracks the country's GDP per capita growth against the global median over time, highlighting the economic divide at the selected year.",
+    );
+}
