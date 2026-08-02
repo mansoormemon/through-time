@@ -69,6 +69,14 @@ function selectData(year) {
   return journey.data.filter((d) => d.year === year);
 }
 
+function openInfo() {
+  d3.select("#info-overlay").classed("active", true);
+}
+
+function closeInfo() {
+  d3.select("#info-overlay").classed("active", false);
+}
+
 export async function renderJourney(app, state) {
   const response = await fetch("scenes/journey.html");
   const html = await response.text();
@@ -85,6 +93,18 @@ export async function renderJourney(app, state) {
 
   renderTimeline();
   renderMap();
+
+  d3.select("#info-button").on("click", openInfo);
+
+  d3.select("#info-close").on("click", closeInfo);
+
+  d3.select("#info-overlay").on("click", function (event) {
+    if (event.target === this) {
+      closeInfo();
+    }
+  });
+
+  d3.select("#info-ok").on("click", closeInfo);
 }
 
 function renderTimeline() {

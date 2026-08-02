@@ -69,5 +69,60 @@
     </aside>
   </div>
 
-  <div id="map-tooltip"></div>
+  <button id="info-button" aria-label="How to explore">?</button>
+  <div id="info-overlay" class="active">
+  <div id="info-dialog" role="dialog" aria-modal="true">
+    <button id="info-close" aria-label="Close instructions">
+      ×
+    </button>
+    <h2>About This Journey</h2>
+    <p>
+      Created by: <a href="https://github.com/mansoormemon" target="_blank">
+        Mansoor Ahmed Memon
+      </a>
+    </p>
+    <p>
+      This interactive visualization explores the evolution of the global
+      economic divide from the post-WWII era to the 2008 financial
+      crisis. Through a combination of maps, timelines, and economic
+      indicators, it tells the story of how countries developed, diverged,
+      and responded to major global events over more than five decades.
+    </p>
+    <h3>How to Explore</h3>
+    <p>
+      Use the timeline at the top to move through key moments from 1952
+      to 2007. Each step represents a five-year period and updates the map,
+      economic indicators, and historical context for that point in time.
+    </p>
+    <p>
+      The world map provides an interactive view of global economic patterns.
+      You can:
+    </p>
+    <ul>
+      <li>Zoom in and out using scroll or touch gestures.</li>
+      <li>Pan across the map by dragging.</li>
+      <li>Hover over countries to view their names.</li>
+      <li>Click a country to explore its individual economic journey.</li>
+    </ul>
+    <h3>Story Panel</h3>
+    <p>
+      The story panel provides additional context for each time period,
+      including major global events, economic changes, and historical
+      developments.
+    </p>
+    <p>
+      When a country is selected, the panel updates with a comparison between
+      that country and the global baseline. Explore its GDP per capita growth,
+      its position relative to the world median, and how its economic path
+      differs from global trends.
+    </p>
+    <h3>Navigation</h3>
+    <p>
+      Use the previous and next controls to move through the timeline.
+      Follow the journey from the post-war economic landscape through decades
+      of growth, divergence, and the global financial crisis of 2008.
+    </p>
+    <button id="info-ok">OK</button>
+  </div>
 </section>
+<div id="map-tooltip"></div>
