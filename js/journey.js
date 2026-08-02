@@ -184,6 +184,17 @@ function renderMap() {
 
   const path = d3.geoPath().projection(projection);
 
+  const zoomGroup = svg.append("g");
+
+  const zoom = d3
+    .zoom()
+    .scaleExtent([1, 8])
+    .on("zoom", (event) => {
+      zoomGroup.attr("transform", event.transform);
+    });
+
+  svg.call(zoom);
+
   const lookup = createLookup(journey.state.currentData);
 
   const colorScale = d3
@@ -198,7 +209,7 @@ function renderMap() {
       .feature(world, world.objects.countries)
       .features.filter((d) => d.properties.name !== "Antarctica");
 
-    svg
+    zoomGroup
       .selectAll(".country")
       .data(countries)
       .enter()
