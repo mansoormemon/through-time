@@ -118,6 +118,7 @@ function updateTimeline() {
   );
 
   setTimelineControlsState();
+  updateTimelineProgress();
 }
 
 function setupTimelineControls() {
@@ -144,6 +145,15 @@ function setTimelineControlsState() {
   d3.select("#timeline-next").property(
     "disabled",
     journey.state.yearIndex === journey.years.length - 1,
+  );
+}
+
+function updateTimelineProgress() {
+  const progress = journey.state.yearIndex / (journey.years.length - 1);
+
+  d3.select("#timeline-track").style(
+    "--timeline-progress",
+    `${progress * 100}%`,
   );
 }
 

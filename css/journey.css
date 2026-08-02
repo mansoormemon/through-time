@@ -43,17 +43,29 @@
   color: var(--color-text-secondary);
 }
 
+/* Controls */
 #timeline-track-controls {
   display: flex;
   align-items: center;
-  gap: var(--space-4);
+
+  gap: 128px;
+
   width: 80%;
   margin: 0 auto;
-  padding: 0 var(--space-5);
+  padding: var(--space-5);
 }
 
 #timeline-track {
   flex: 1;
+
+  width: 60%;
+  margin: 0 auto;
+
+  position: relative;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .timeline-control {
@@ -90,52 +102,68 @@
 
 .timeline-control:disabled {
   opacity: 0.35;
+
   cursor: not-allowed;
+
   background: transparent;
   border-color: var(--color-border);
   color: var(--color-text-secondary);
 }
 
-#timeline-track {
-  width: 60%;
-  margin: 0 auto;
+/* Timeline rail */
+#timeline-track::before {
+  content: "";
 
-  position: relative;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 6px;
 
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  height: 4px;
+  transform: translateY(-50%);
 
-  padding: var(--space-5);
+  background: var(--color-border);
+  border-radius: 999px;
 }
 
+#timeline-track::after {
+  content: "";
+
+  position: absolute;
+  left: 0;
+  top: 6px;
+
+  height: 4px;
+  transform: translateY(-50%);
+
+  width: var(--timeline-progress, 0%);
+
+  background: var(--color-accent);
+  border-radius: 999px;
+
+  transition: width var(--transition-fast);
+}
+
+/* Timeline points */
 .timeline-point {
   position: relative;
-
-  cursor: pointer;
   z-index: 1;
-  margin: 0 auto;
-}
 
-.timeline-point {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-}
 
-.timeline-marker {
-  margin-bottom: 6px;
-}
+  width: 0px;
 
-.timeline-year {
-  font-size: var(--text-xs);
-  text-align: center;
+  cursor: pointer;
 }
 
 .timeline-marker {
   width: 12px;
   height: 12px;
+
+  margin-bottom: 6px;
 
   border-radius: 100%;
 
@@ -144,7 +172,8 @@
 
   transition:
     transform var(--transition-fast),
-    background var(--transition-fast);
+    background var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .timeline-point:hover .timeline-marker {
@@ -153,7 +182,13 @@
 
 .timeline-point.active .timeline-marker {
   background: var(--color-accent);
+
   transform: scale(1.75);
+}
+
+.timeline-year {
+  font-size: var(--text-xs);
+  text-align: center;
 }
 
 /* Main */
