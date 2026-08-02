@@ -359,7 +359,7 @@
   font-family: var(--font-mono);
 }
 
-#country-gdp-chart {
+.country-gdp-svg-container {
   background-color: var(--color-background);
   padding: var(--space-2);
   border-radius: 8px;

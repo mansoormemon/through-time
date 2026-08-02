@@ -399,8 +399,12 @@ function renderCountryGDPChart(countryHistory, worldHistory) {
 
   d3.select("#country-gdp-chart").html("");
 
-  const svg = d3
+  const chartContainer = d3
     .select("#country-gdp-chart")
+    .append("div")
+    .attr("class", "country-gdp-svg-container");
+
+  const svg = chartContainer
     .append("svg")
     .attr("width", width)
     .attr("height", height);
