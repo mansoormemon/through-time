@@ -385,6 +385,7 @@
   background-color: var(--color-background);
   padding: var(--space-2);
   border-radius: 8px;
+  min-width: 480px;
 }
 
 #selected-country-name {
