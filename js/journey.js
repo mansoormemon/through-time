@@ -489,7 +489,7 @@ function renderCountryGDPChart(countryHistory, worldHistory) {
     .attr("x2", x(countryEnd.year))
     .attr("y1", y(countryEnd.gdpPerCapita))
     .attr("y2", y(worldEnd.gdpPerCapita))
-    .attr("stroke", "var(--color-accent)")
+    .attr("stroke", "var(--color-chart)")
     .attr("stroke-dasharray", "3,3");
 
   g.append("g")

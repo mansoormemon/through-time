@@ -388,12 +388,7 @@
 }
 
 #selected-country-name {
-  font-size: var(--text-lg);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-#selected-country-name {
   margin: 0 0 var(--space-3);
 
   font-size: var(--text-sm);
@@ -406,11 +401,6 @@
 .country-value,
 .world-value {
   font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  fill: var(--color-text-secondary);
-}
-.country-value,
-.world-value {
   font-size: var(--text-xxs);
   fill: var(--color-text);
 

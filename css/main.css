@@ -36,6 +36,8 @@
 
   --transition-fast: 200ms ease;
   --transition-slow: 900ms ease;
+
+  --color-chart: #9b5de5;
 }
 
 *,
