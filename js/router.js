@@ -1,12 +1,14 @@
 import { state } from "./state.js";
 import { renderIntro } from "./intro.js";
 import { renderJourney } from "./journey.js";
+import { renderFarewell } from "./farewell.js";
 
 const app = document.querySelector("#app");
 
 const scenes = {
   intro: renderIntro,
   journey: renderJourney,
+  farewell: renderFarewell,
 };
 
 export async function changeScene(nextScene) {

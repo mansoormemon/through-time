@@ -5,7 +5,7 @@ export async function renderIntro(app) {
   const html = await response.text();
   app.innerHTML = html;
 
-  const button = app.querySelector(".start-button");
+  const button = app.querySelector("#start-button");
   button.addEventListener("click", () => {
     changeScene("journey");
   });

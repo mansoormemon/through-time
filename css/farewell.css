@@ -1,13 +1,14 @@
-.intro-content {
+.farewell-content {
+  padding: var(--space-5);
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--space-3);
-  animation: intro-enter var(--transition-slow) ease forwards;
+  animation: farewell-enter var(--transition-slow) ease forwards;
 }
 
-.intro-content h1 {
+.farewell-content h1 {
   margin: 0;
   font-family: var(--font-title);
   font-size: var(--text-display);
@@ -15,14 +16,12 @@
   letter-spacing: 0.03em;
 }
 
-.intro-content h2 {
+.farewell-content p {
   margin: 0;
-  color: var(--color-text-secondary);
-  font-size: var(--text-lg);
-  font-weight: 400;
+  color: var(--color-text);
 }
 
-#start-button {
+#restart-button {
   margin-top: var(--space-5);
   padding: 0.8rem 2.4rem;
   border: 1px solid var(--color-accent);
@@ -39,13 +38,13 @@
     transform var(--transition-fast);
 }
 
-#start-button:hover {
+#restart-button:hover {
   background: var(--color-accent);
   color: var(--color-background);
   transform: translateY(-2px);
 }
 
-@keyframes intro-enter {
+@keyframes farewell-enter {
   from {
     opacity: 0;
     transform: translateY(25px);

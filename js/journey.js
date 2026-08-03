@@ -153,6 +153,7 @@ function setupTimelineControls() {
   d3.select("#timeline-next").on("click", () => {
     const isLast = journey.state.yearIndex === journey.years.length - 1;
     if (isLast) {
+      changeScene("farewell");
     } else {
       setState("yearIndex", journey.state.yearIndex + 1);
     }

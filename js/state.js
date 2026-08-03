@@ -1,3 +1,3 @@
 export const state = {
-  scene: "journey",
+  scene: "intro",
 };
